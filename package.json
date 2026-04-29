@@ -1,0 +1,14 @@
+{
+  "name": "imprenta-app",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "mobile-expo",
+    "backend/firebase/functions"
+  ],
+  "scripts": {
+    "bootstrap": "npm install --workspaces",
+    "lint": "echo \"Add linter scripts\""
+  }
+}
