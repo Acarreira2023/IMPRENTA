@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es" dir="ltr">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+
+    <!-- ── SEO primario ─────────────────────────────────────── -->
+    <title>IMPRENTA | Sistema de Gestión de Producción</title>
+    <meta name="description" content="Sistema web de gestión de producción para imprentas. Control de pedidos, etapas, máquinas, alertas y trazabilidad completa del flujo productivo."/>
+    <meta name="keywords"    content="imprenta, gestión de producción, pedidos, flujo productivo, encuadernación, impresión"/>
+    <meta name="author"      content="IMPRENTA"/>
+    <meta name="robots"      content="noindex, nofollow"/> <!-- App privada: no indexar contenido interno -->
+    <link rel="canonical"    href="https://imprenta.app/"/>
+
+    <!-- ── Open Graph (redes sociales) ──────────────────────── -->
+    <meta property="og:type"        content="website"/>
+    <meta property="og:url"         content="https://imprenta.app/"/>
+    <meta property="og:title"       content="IMPRENTA | Gestión de Producción"/>
+    <meta property="og:description" content="Sistema web para la gestión integral del flujo de producción en imprentas."/>
+    <meta property="og:image"       content="/og-image.png"/>
+    <meta property="og:locale"      content="es_AR"/>
+    <meta property="og:site_name"   content="IMPRENTA"/>
+
+    <!-- ── Twitter Card ─────────────────────────────────────── -->
+    <meta name="twitter:card"        content="summary_large_image"/>
+    <meta name="twitter:title"       content="IMPRENTA | Gestión de Producción"/>
+    <meta name="twitter:description" content="Sistema web para la gestión integral del flujo de producción en imprentas."/>
+    <meta name="twitter:image"       content="/og-image.png"/>
+
+    <!-- ── PWA + App ────────────────────────────────────────── -->
+    <meta name="theme-color"                content="#2C1A0E"/>
+    <meta name="application-name"           content="IMPRENTA"/>
+    <meta name="apple-mobile-web-app-title" content="IMPRENTA"/>
+    <meta name="apple-mobile-web-app-capable"            content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style"   content="black-translucent"/>
+    <meta name="mobile-web-app-capable"     content="yes"/>
+    <meta name="msapplication-TileColor"    content="#2C1A0E"/>
+    <meta name="msapplication-config"       content="/browserconfig.xml"/>
+    <link rel="manifest"                    href="/manifest.json"/>
+
+    <!-- ── Favicons ─────────────────────────────────────────── -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+    <link rel="icon" type="image/png" sizes="32x32"   href="/favicon-32x32.png"/>
+    <link rel="icon" type="image/png" sizes="16x16"   href="/favicon-16x16.png"/>
+    <link rel="apple-touch-icon" sizes="180x180"      href="/apple-touch-icon.png"/>
+
+    <!-- ── Performance: preconnect ──────────────────────────── -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link rel="preconnect" href="https://firestore.googleapis.com"/>
+    <link rel="preconnect" href="https://identitytoolkit.googleapis.com"/>
+
+    <!-- ── Fuente Inter ─────────────────────────────────────── -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    </noscript>
+
+    <!-- ── Structured Data (JSON-LD) ────────────────────────── -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type":    "SoftwareApplication",
+      "name":     "IMPRENTA",
+      "description": "Sistema web de gestión de producción para imprentas",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "offers": { "@type": "Offer", "price": "0" }
+    }
+    </script>
+  </head>
+  <body>
+    <!-- No-script fallback -->
+    <noscript>
+      <div style="padding:24px;font-family:sans-serif;text-align:center">
+        <h1>IMPRENTA</h1>
+        <p>Esta aplicación requiere JavaScript para funcionar.<br/>Por favor habilitá JavaScript en tu navegador.</p>
+      </div>
+    </noscript>
+
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

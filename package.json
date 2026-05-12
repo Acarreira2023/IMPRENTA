@@ -1,14 +1,35 @@
 {
-  "name": "imprenta-app",
-  "version": "0.1.0",
+  "name": "imprenta",
   "private": true,
-  "workspaces": [
-    "frontend",
-    "mobile-expo",
-    "backend/firebase/functions"
-  ],
+  "version": "0.1.0",
+  "type": "module",
   "scripts": {
-    "bootstrap": "npm install --workspaces",
-    "lint": "echo \"Add linter scripts\""
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "crypto-js": "^4.2.0",
+    "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
+    "firebase": "^12.13.0",
+    "lucide-react": "^1.14.0",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "react-router-dom": "^7.15.0",
+    "recharts": "^3.8.1",
+    "tailwind-merge": "^3.6.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "4.3.0",
+    "@types/crypto-js": "^4.2.2",
+    "@types/node": "^25.7.0",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.1",
+    "tailwindcss": "4.3.0",
+    "typescript": "6.0.3",
+    "vite": "8.0.12"
   }
 }
