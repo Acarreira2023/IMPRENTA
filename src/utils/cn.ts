@@ -13,26 +13,26 @@ export function cn(...inputs: ClassValue[]) {
  */
 export function formatDate(date: Date | null | undefined, format: 'short' | 'long' | 'time' = 'short'): string {
   if (!date) return '-';
-  
+
   const d = new Date(date);
-  
+
   if (format === 'short') {
     return d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
   }
-  
+
   if (format === 'long') {
-    return d.toLocaleDateString('es-AR', { 
-      weekday: 'long', 
-      day: '2-digit', 
-      month: 'long', 
-      year: 'numeric' 
+    return d.toLocaleDateString('es-AR', {
+      weekday: 'long',
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
     });
   }
-  
+
   if (format === 'time') {
     return d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
   }
-  
+
   return d.toLocaleString('es-AR');
 }
 

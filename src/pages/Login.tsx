@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '@services/auth';
-import { useAuth } from '@context/AuthContext';
+import { login } from '../services/auth';
+import { useAuth } from '../context/AuthContext';
 import { Printer, Lock, Mail, AlertCircle, Eye, EyeOff, BookOpen } from 'lucide-react';
-import { cn } from '@utils/cn';
+import { cn } from '../utils/cn';
 
 export const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -36,10 +36,10 @@ export const Login: React.FC = () => {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-900">
-      
+
       {/* FONDO ANIMADO: Simulación de Impresión / Offset */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/50 via-slate-900 to-purple-900/50" />
+        <div className="absolute inset-0 bg-linear-to-br from-blue-900/50 via-slate-900 to-purple-900/50" />
         {/* Líneas de "impresión" en movimiento */}
         <div className="absolute inset-0 opacity-20">
           <div className="absolute w-[200%] h-20 bg-blue-500/20 -rotate-45 animate-[print_8s_linear_infinite] top-[-10%]" />
@@ -50,7 +50,7 @@ export const Login: React.FC = () => {
 
       <div className="relative z-10 w-full max-w-md px-6">
         <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl p-8 border border-white/20 transform transition-all animate-in fade-in zoom-in duration-500">
-          
+
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600 text-white shadow-lg shadow-blue-200 mb-4 animate-bounce-slow">
               <Printer className="w-8 h-8" />
@@ -105,7 +105,7 @@ export const Login: React.FC = () => {
 
             {error && (
               <div className="flex items-center gap-2 text-red-600 bg-red-50 p-3.5 rounded-xl text-sm border border-red-100 animate-shake">
-                <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                <AlertCircle className="h-5 w-5 shrink-0" />
                 <span>{error}</span>
               </div>
             )}
@@ -138,7 +138,7 @@ export const Login: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         <p className="text-center mt-6 text-gray-400 text-xs tracking-widest uppercase">
           © 2026 Sistema de Gestión de Imprentas
         </p>

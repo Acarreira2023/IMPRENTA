@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { cn } from '@utils/cn';
-import { useAuth } from '@context/AuthContext';
-import { logout } from '@services/auth';
+import { cn } from '../../utils/cn';
+import { useAuth } from '../../context/AuthContext';
+import { logout } from '../../services/auth';
 import {
   LayoutDashboard,
   Package,

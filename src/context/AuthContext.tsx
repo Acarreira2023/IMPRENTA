@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User as FirebaseUser } from 'firebase/auth';
-import { Usuario } from '@types';
-import { onAuthChange } from '@services/auth';
-import { getUsuario } from '@services/firestore';
+import { User as FirebaseUser, onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../services/firebase'; // Exportar 'auth' desde tu configuración de Firebase
+import { Usuario } from '../types';
+import { getUsuario } from '../services/firestore'; // Función para obtener datos adicionales del usuario desde Firestore
 
 interface AuthContextType {
   usuario: Usuario | null;
@@ -23,23 +23,32 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthChange(async (user) => {
+    // Usamos el listener directo de Firebase Auth
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setFirebaseUser(user);
+
       if (user) {
-        const data = await getUsuario(user.uid);
-        setUsuario(data);
+        try {
+          // Buscamos el perfil completo en Firestore
+          const data = await getUsuario(user.uid);
+          setUsuario(data || null);
+        } catch (error) {
+          console.error("Error al obtener usuario de Firestore:", error);
+          setUsuario(null);
+        }
       } else {
         setUsuario(null);
       }
       setLoading(false);
     });
+
     return () => unsubscribe();
   }, []);
 
   const refreshUsuario = async () => {
     if (firebaseUser) {
       const data = await getUsuario(firebaseUser.uid);
-      setUsuario(data);
+      setUsuario(data || null);
     }
   };
 
@@ -47,14 +56,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     usuario,
     firebaseUser,
     loading,
-    isAuthenticated: !!usuario && usuario.activo,
+    // Autenticado si existe usuario de Firebase Y existe el registro en tu BD
+    isAuthenticated: !!firebaseUser && !!usuario,
     isAdmin: usuario?.rol === 'admin',
     isOperario: usuario?.rol === 'operario',
     isCliente: usuario?.rol === 'cliente',
     refreshUsuario,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {!loading && children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => {

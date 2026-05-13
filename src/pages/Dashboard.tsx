@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '@context/AuthContext';
-import { getKpis, getPedidos, getAlertas } from '@services/firestore';
-import { KpiData, Pedido, Alerta } from '../@types';
-import { KpiCard } from '@components/KpiCard';
+import { useAuth } from '../context/AuthContext';
+import { getKpis, getPedidos, getAlertas } from '../services/firestore';
+import { KpiData, Pedido, Alerta } from '../types';
+import KpiCard from '../components/KpiCard';
 import {
   BarChart,
   Bar,
@@ -16,13 +16,14 @@ import {
   Cell,
   Legend,
 } from 'recharts';
-import { 
-  Package, 
-  Clock, 
-  CheckCircle, 
-  AlertTriangle, 
+import {
+  Package,
+  Clock,
+  CheckCircle,
+  AlertTriangle,
   TrendingUp,
-  Bell
+  Bell,
+  X
 } from 'lucide-react';
 
 const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
@@ -44,7 +45,7 @@ export const Dashboard: React.FC = () => {
         ]);
         setKpis(kpiData);
         setPedidos(pedidosData);
-        setAlertas(alertasData.filter(a => !a.leida));
+        setAlertas(alertasData.filter((a: Alerta) => !a.leida));
       } catch (error) {
         console.error("Error al cargar dashboard:", error);
       } finally {
@@ -54,9 +55,12 @@ export const Dashboard: React.FC = () => {
     loadDashboardData();
   }, []);
 
-  if (loading) return <div className="p-8 text-center">Cargando métricas...</div>;
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+  );
 
-  // Datos para el gráfico de torta (Estado de Pedidos)
   const chartData = [
     { name: 'Pendientes', value: kpis?.pedidosPendientes || 0 },
     { name: 'En Proceso', value: kpis?.pedidosEnProceso || 0 },
@@ -68,35 +72,34 @@ export const Dashboard: React.FC = () => {
       {/* Cabecera */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Bienvenido, {usuario?.nombre}</h1>
-        <p className="text-gray-500">Este es el estado actual de la producción.</p>
+        <p className="text-gray-500 text-sm">Estado actual de la producción de la imprenta.</p>
       </div>
 
       {/* Grilla de KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <KpiCard 
-          title="Pedidos Totales" 
-          value={kpis?.pedidosTotales || 0} 
-          icon={Package} 
-          color="blue" 
-          trend={{ value: 12, positive: true }}
+        <KpiCard
+          title="Pedidos Totales"
+          value={kpis?.pedidosTotales || 0}
+          icon={Package}
+          color="blue"
         />
-        <KpiCard 
-          title="En Producción" 
-          value={kpis?.pedidosEnProceso || 0} 
-          icon={Clock} 
-          color="orange" 
+        <KpiCard
+          title="En Producción"
+          value={kpis?.pedidosEnProceso || 0}
+          icon={Clock}
+          color="orange"
         />
-        <KpiCard 
-          title="Mermas" 
-          value={`${kpis?.mermaTotal || 0} u.`} 
-          icon={AlertTriangle} 
-          color="red" 
+        <KpiCard
+          title="Mermas"
+          value={`${kpis?.mermaTotal || 0}`}
+          icon={AlertTriangle}
+          color="red"
         />
-        <KpiCard 
-          title="Entregados" 
-          value={kpis?.pedidosEntregados || 0} 
-          icon={CheckCircle} 
-          color="green" 
+        <KpiCard
+          title="Entregados"
+          value={kpis?.pedidosEntregados || 0}
+          icon={CheckCircle}
+          color="green"
         />
       </div>
 
@@ -106,15 +109,15 @@ export const Dashboard: React.FC = () => {
           <div className="flex items-center justify-between mb-6">
             <h3 className="font-bold text-gray-800 flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-blue-500" />
-              Producción Semanal
+              Producción (Últimos pedidos)
             </h3>
           </div>
           <div className="h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={pedidos.slice(0, 7)}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="numeroPedido" hide />
-                <YAxis />
+                <XAxis dataKey="numeroPedido" tick={{fontSize: 12}} />
+                <YAxis tick={{fontSize: 12}} />
                 <Tooltip 
                   cursor={{fill: '#f8fafc'}}
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
@@ -127,7 +130,7 @@ export const Dashboard: React.FC = () => {
 
         {/* Gráfico de Torta - Estados */}
         <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-          <h3 className="font-bold text-gray-800 mb-6">Distribución de Estados</h3>
+          <h3 className="font-bold text-gray-800 mb-6 text-center">Distribución de Estados</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -138,7 +141,7 @@ export const Dashboard: React.FC = () => {
                   paddingAngle={5}
                   dataKey="value"
                 >
-                  {chartData.map((entry, index) => (
+                  {chartData.map((_entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
@@ -150,8 +153,10 @@ export const Dashboard: React.FC = () => {
           <div className="mt-4 space-y-2">
             {alertas.length > 0 && (
               <div className="p-3 bg-red-50 rounded-xl border border-red-100 flex items-center gap-3">
-                <Bell className="w-5 h-5 text-red-500 animate-ring" />
-                <span className="text-sm text-red-700 font-medium">Tienes {alertas.length} alertas activas</span>
+                <Bell className="w-5 h-5 text-red-500" />
+                <span className="text-sm text-red-700 font-medium">
+                  {alertas.length} alertas pendientes de revisión
+                </span>
               </div>
             )}
           </div>

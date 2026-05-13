@@ -1,4 +1,4 @@
-import type { AppConfig } from '@/types'
+import type { AppConfig } from '../types'
 
 export const APP_CONFIG: AppConfig = {
   nombreEmpresa: 'IMPRENTA',
