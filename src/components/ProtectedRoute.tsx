@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { UserRole } from '../@types';
+import { UserRole } from '../types';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -34,12 +34,12 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   // Si requiere cambio de password (primer login) y aún no lo hizo
-  if (requirePasswordChange && usuario?.mustChange) {
+  if (requirePasswordChange && usuario?.mustChangePassword) {
     return <Navigate to="/cambiar-password" replace />;
   }
 
   // Si el usuario ya pasó el primer login pero intenta entrar a cambiar-password sin permiso
-  if (!requirePasswordChange && usuario?.mustChange) {
+  if (!requirePasswordChange && usuario?.mustChangePassword) {
     return <Navigate to="/cambiar-password" replace />;
   }
 
