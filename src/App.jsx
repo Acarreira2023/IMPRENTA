@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import Navbar from './components/Navbar.jsx';
-import Sidebar from './components/Sidebar.jsx';
+import { AuthProvider, useAuth } from './context/AuthContext.jsx';
+import Navbar from './components/NavBar.jsx';
+import Sidebar from './components/SideBar.jsx';
 import Login from './views/Login.jsx';
 import Dashboard from './views/Dashboard.jsx';
 import Pedidos from './views/Pedidos.jsx';
@@ -17,21 +17,32 @@ function ContenidoAplicacion() {
     return <Login onLoginSuccess={() => setCurrentView('dashboard')} />;
   }
 
+  // Enrutador interno de la maqueta industrial
   const renderView = () => {
     switch (currentView) {
-      case 'dashboard': return <Dashboard />;
-      case 'pedidos': return <Pedidos />;
-      case 'produccion': return <Produccion />;
-      case 'reportes': return <Reportes />;
-      default: return <Dashboard />;
+      case 'dashboard': 
+        return <Dashboard />;
+      case 'pedidos': 
+        return <Pedidos />;
+      case 'produccion': 
+        return <Produccion />;
+      case 'reportes': 
+        return <Reportes />;
+      default: 
+        return <Dashboard />;
     }
   };
 
   return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden">
+    <div className="flex h-screen bg-slate-50 overflow-hidden select-none">
+      {/* Menú Lateral de Operaciones */}
       <Sidebar currentView={currentView} setCurrentView={setCurrentView} />
+      
+      {/* Contenedor Principal de Trabajo */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <Navbar />
+        
+        {/* Espacio de Renderizado de Vistas */}
         <main className="flex-1 overflow-y-auto p-4 md:p-6 max-w-[1600px] w-full mx-auto">
           {renderView()}
         </main>

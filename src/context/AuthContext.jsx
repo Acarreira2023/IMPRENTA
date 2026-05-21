@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { login as authLogin, logout as authLogout, onAuthChange } from '../services/auth';
-import { getUsuario } from '../services/firestore';
+import { login as authLogin, logout as authLogout, onAuthChange } from '../services/auth.js';
+import { getUsuario } from '../services/firestore.js';
 
 const AuthContext = createContext();
 
