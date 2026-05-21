@@ -1,81 +1,88 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { auth, db } from '../firebase';
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { login as authLogin, logout as authLogout, onAuthChange } from '../services/auth';
+import { getUsuario } from '../services/firestore';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-
-  const [user, setUser] = useState(null);
-
-  const [loading, setLoading] = useState(false);
-
-  const login = async (email, password) => {
-    if (email.endsWith('@demo.com')) {
-      const role = email.includes('admin') ? 'ADMINISTRADOR' : email.includes('operario') ? 'OPERARIO' : 'CLIENTE';
-      const demoUser = {
-        uid: `demo_${Date.now()}`,
-        email: email,
-        role: role,
-        name: `Usuario Demo (${role.toLowerCase()})`,
-        isDemo: true
-      };
-      setUser(demoUser);
-      return demoUser;
-    }
-    return signInWithEmailAndPassword(auth, email, password);
-  };
-
-  const logout = () => {
-    if (user?.isDemo) {
-      setUser(null);
-      return;
-    }
-    return signOut(auth);
-  };
+  const [user, setUser] = useState(() => {
+    // Intentar recuperar sesión persistente al recargar la página
+    const savedSession = localStorage.getItem('imprenta_session');
+    return savedSession ? JSON.parse(savedSession) : null;
+  });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
+    // Escucha cambios reales de Firebase Cloud (solo si no es usuario demo)
+    const unsubscribe = onAuthChange(async (firebaseUser) => {
+      if (firebaseUser && (!user || !user.isDemo)) {
         try {
-          const userDoc = await getDoc(doc(db, 'usuarios', firebaseUser.uid));
-          if (userDoc.exists()) {
-            setUser({
-              uid: firebaseUser.uid,
-              email: firebaseUser.email,
-              isDemo: false,
-              ...userDoc.data()
-            });
-          } else {
-            setUser({ uid: firebaseUser.uid, email: firebaseUser.email, role: 'CLIENTE', isDemo: false });
-          }
-        } catch (e) {
-          console.error("Error leyendo perfil de Firebase Firestore", e);
+          const datosExtra = await getUsuario(firebaseUser.uid);
+          const usuarioCompleto = {
+            uid: firebaseUser.uid,
+            email: firebaseUser.email,
+            isDemo: false,
+            ...datosExtra
+          };
+          setUser(usuarioCompleto);
+          localStorage.setItem('imprenta_session', JSON.stringify(usuarioCompleto));
+        } catch (err) {
+          console.error("Error al sincronizar usuario de Firestore:", err);
         }
-      } else {
-        setUser((prev) => (prev?.isDemo ? prev : null));
       }
+      setLoading(false);
     });
 
-    return unsubscribe;
-  }, []);
+    // Si hay una sesión demo en el LocalStorage, quitamos el loading de inmediato
+    if (user?.isDemo) {
+      setLoading(false);
+    }
 
-  const changeRoleDevMode = (newRole, forceDemo = true) => {
-    setUser({
-      uid: forceDemo ? `demo_${Date.now()}` : 'real_user_dev',
-      email: `${newRole.toLowerCase()}@${forceDemo ? 'demo.com' : 'imprenta.com'}`,
-      role: newRole,
-      name: forceDemo ? `Demo Local - ${newRole}` : `Operación Real - ${newRole}`,
-      isDemo: forceDemo
-    });
+    return () => unsubscribe();
+  }, [user]);
+
+  // Función de Login Unificada
+  const login = async (email, password) => {
+    const resultado = await authLogin(email, password);
+    if (resultado.success) {
+      setUser(resultado.user);
+      localStorage.setItem('imprenta_session', JSON.stringify(resultado.user));
+      return resultado.user;
+    } else {
+      throw new Error(resultado.error);
+    }
+  };
+
+  // Función de Cierre de Sesión
+  const logout = async () => {
+    if (user && !user.isDemo) {
+      await authLogout();
+    }
+    setUser(null);
+    localStorage.removeItem('imprenta_session');
+  };
+
+  // Conmutador rápido para la consola de desarrollo en el Navbar
+  const changeRoleDevMode = (nuevoRol, esDemo = true) => {
+    const usuarioModificado = {
+      uid: esDemo ? `demo_${Date.now()}` : (user?.uid || 'real_dev_uid'),
+      email: esDemo ? `${nuevoRol.toLowerCase()}@demo.com` : (user?.email || 'admin@empresa.com'),
+      role: nuevoRol,
+      rol: nuevoRol,
+      name: `Dev Mode (${nuevoRol.toLowerCase()})`,
+      isDemo: esDemo
+    };
+    setUser(usuarioModificado);
+    localStorage.setItem('imprenta_session', JSON.stringify(usuarioModificado));
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, changeRoleDevMode }}>
+    <AuthContext.Provider value={{ user, login, logout, changeRoleDevMode, loading }}>
       {!loading && children}
     </AuthContext.Provider>
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export function useAuth() {
+  return useContext(AuthContext);
+}

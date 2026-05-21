@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext.jsx';
 import { Printer, Lock, Mail, Eye, EyeOff } from 'lucide-react';
 
 export const Login = ({ onLoginSuccess }) => {
@@ -39,7 +39,7 @@ export const Login = ({ onLoginSuccess }) => {
         {/* Título y Subtítulo */}
         <div className="login-header">
           <h1 className="login-title">IMPRENTA</h1>
-          <p className="login-subtitle">Sistema de Gestión de Producción</p>
+          <p className="login-subtitle">Sistema de Gestión de Production</p>
         </div>
 
         {/* Formulario Estricto y Cerrado */}
@@ -82,7 +82,7 @@ export const Login = ({ onLoginSuccess }) => {
                   color: '#94a3b8',
                   display: 'flex',
                   alignItems: 'center',
-                  justifycontent: 'center'
+                  justifyContent: 'center' // Corregido camelCase para compatibilidad de estilos en línea de React
                 }}
               >
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -129,8 +129,17 @@ export const Login = ({ onLoginSuccess }) => {
         </div>
 
         {/* Footer */}
-        <div className="login-footer">
+        <div className="login-footer" style={{ textAlign: 'center' }}>
           <p className="login-footer-text">© 2026 Sistema de Gestión de Imprentas</p>
+          <p style={{ 
+            fontSize: '10px', 
+            color: '#94a3b8', 
+            marginTop: '4px', 
+            fontWeight: '500',
+            letterSpacing: '0.025em'
+          }}>
+            Creado por <span style={{ color: '#64748b', fontWeight: '600' }}>Aníbal Carreira</span>
+          </p>
         </div>
       </div>
     </div>
