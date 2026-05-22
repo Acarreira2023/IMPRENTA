@@ -1,11 +1,7 @@
-/* ============================================
-   1. CONFIGURACIÓN E INYECCIÓN DE TAILWIND CSS
-   ============================================ */
-@import "tailwindcss/preflight";
-@import "tailwindcss/utilities";
+@import "tailwindcss";
 
 /* ============================================
-   2. ESTÉTERICA GENERAL Y CONFIGURACIÓN BASE
+   1. ESTÉTERICA GENERAL Y CONFIGURACIÓN BASE
    ============================================ */
 * {
   margin: 0;
@@ -80,7 +76,7 @@ input:-webkit-autofill:focus {
 }
 
 /* ============================================
-   3. ESTÉTICA DEL LOGIN (DISEÑO CORPORATIVO)
+   2. ESTÉTICA DEL LOGIN (DISEÑO CORPORATIVO)
    ============================================ */
 
 /* Container Principal */
