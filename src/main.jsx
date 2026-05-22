@@ -2,11 +2,13 @@ import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 
+// Estilos globales (Tailwind)
+import './index.css';
+
 // Importación de App con extensión explícita para evitar fallas en bundlers
 import App from './App.jsx';
 
-// Estilos globales (Tailwind)
-import './index.css';
+
 
 const rootElement = document.getElementById('root');
 
